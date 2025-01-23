@@ -35,5 +35,8 @@ public class SqlUtil
    ![false-query](https://github.com/user-attachments/assets/308fba92-18b8-44ce-befa-584e5265cdae)
 **Caution**:  Need to change tablename in the CREATE query after every successful query.
 
-
+## Advisory
+1. Filter the `%0b` character.
+2. Filter keyword `select` instead of `select ` (remove the ending space)
+3. Update CMS to the newest version of Ruoyi CMS
 
