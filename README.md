@@ -3,9 +3,9 @@
 I discovered a Blind SQL Injection vulnerability in the `createTable` feature of RuoYi Framework v4.7.9. This allows an authenticated administrator to execute arbitrary SQL commands via the `sql` parameter. This is a bypass of CVE-2024-42900 fix as the SQL Injection filter in `filterKeyword` method is insufficient, the regex can be bypass by using `%0b` as the alternative character to spaces.
 
 ## Affected Version
-Product: RuoYi Framework
-Version: ≤ 4.7.9
-Link: [[Ruoyi]](https://github.com/yangzongzhuan/RuoYi)
+Product: RuoYi Framework   
+Version: ≤ 4.7.9   
+Link: [[Ruoyi]](https://github.com/yangzongzhuan/RuoYi)   
 
 ## Vulnerability Analysis
 The vulnerability was found in the `https://github.com/yangzongzhuan/RuoYi/blob/master/ruoyi-common/src/main/java/com/ruoyi/common/utils/sql/SqlUtil.java` file as follow. The application relies on blacklist keywords to filter SQL Injection attacks, this approach is prone to bypasses. In this case, the blacklist doesn't block the `%0b` character, so I can use it to trigger SQL Injection with `select%0b`.
@@ -48,13 +48,17 @@ public class SqlUtil
    sql=CREATE%20table%20j2iz96_665%20as%20SELECT%0b111%20FROM%20sys_job%20WHERE%201%3d0%20AND%0bIF(ascii(substring((select%0b%40%40version)%2c5%2c1))%3d44%2c%201%2c%201%2f0)%3b
    ```
 **Caution**:  Need to change tablename in the CREATE query after every successful query.
-3. With the boolean-based SQL Injection, data can be exfiltrated using the Python poc in this repo
-// Add poc image
+3. With the boolean-based SQL Injection, data can be exfiltrated using the Python poc in this repo   
+**Usage**   
+<img width="583" height="219" alt="poc-usage" src="https://github.com/user-attachments/assets/b70658a6-e3b8-4704-86d5-7ecfd263eebf" />
+**Exfiltrate DB version poc**   
+<img width="815" height="479" alt="poc-db-version" src="https://github.com/user-attachments/assets/fa17493d-d07b-463f-a9ba-f10e09c93ced" />
+
 ## Impact
 An attacker with administrative privilege can dump the entire database, including other user credentials and system configurations.
 
 ## Advisory
 1. Filter the `%0b` character.
 2. Filter keyword `select` instead of `select ` (remove the ending space)
-3. Update CMS to the newest version of Ruoyi CMS
+3. Update CMS to the 4.8.0 version of Ruoyi CMS
 
