@@ -50,9 +50,9 @@ public class SqlUtil
 **Caution**:  Need to change tablename in the CREATE query after every successful query.
 3. With the boolean-based SQL Injection, data can be exfiltrated using the Python poc in this repo   
 **Usage**   
-<img width="583" height="219" alt="poc-usage" src="https://github.com/user-attachments/assets/b70658a6-e3b8-4704-86d5-7ecfd263eebf" />
+<img width="583" height="219" alt="poc-usage" src="https://github.com/user-attachments/assets/b70658a6-e3b8-4704-86d5-7ecfd263eebf" />   
 **Exfiltrate DB version poc**   
-<img width="815" height="479" alt="poc-db-version" src="https://github.com/user-attachments/assets/fa17493d-d07b-463f-a9ba-f10e09c93ced" />
+<img width="815" height="479" alt="poc-db-version" src="https://github.com/user-attachments/assets/fa17493d-d07b-463f-a9ba-f10e09c93ced" />  
 
 ## Impact
 An attacker with administrative privilege can dump the entire database, including other user credentials and system configurations.
